@@ -262,16 +262,16 @@ function App() {
           </div>
           <div className="demo-grid">
             {DEMO_USERS.map(u => (
-              <div key={u.role} className="demo-card-item">
+              <div key={u.role} className="demo-card-item" style={{ cursor: 'pointer' }} onClick={() => {
+                setLogin({ email: u.id, password: u.password });
+                setNotice(''); // clear any previous errors
+              }}>
                 <div className="demo-role-badge">{u.role}</div>
                 <div className="demo-cred">
                   <div><strong>{u.id}</strong></div>
                   <div>Password: <strong>{u.password}</strong></div>
                 </div>
-                <button className="copy-btn-small" onClick={async () => {
-                  await navigator.clipboard.writeText(`ID: ${u.id}\nPassword: ${u.password}`);
-                  setNotice('Credentials copied!');
-                }}>Copy</button>
+                <button className="copy-btn-small">Fill</button>
               </div>
             ))}
           </div>
