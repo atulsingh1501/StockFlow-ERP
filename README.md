@@ -462,6 +462,15 @@ StockFlow-ERP/
 
 ---
 
+## ⚠️ Known Limitations & Assumptions
+
+- **Images/Uploads:** Product images (AWS S3) were not implemented as it was marked as an optional bonus, and free tiers for S3 require a credit card for AWS.
+- **Reporting:** Advanced historical reports (e.g., month-over-month sales graphs) are not fully implemented; only summary KPIs and current valuations are provided on the Reports page.
+- **Assumptions:** It is assumed that multiple warehouse locations exist, but stock is tracked globally per product for simplicity in this MVP.
+- **Currency:** All financial figures are assumed to be in INR (₹).
+
+---
+
 ## 👨‍💻 Author
 
 **Atul Singh**
