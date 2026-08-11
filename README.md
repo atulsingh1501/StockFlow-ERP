@@ -22,7 +22,7 @@ The goal of this project is to demonstrate:
 - Database modeling
 - Authentication & authorization
 - Inventory business logic
-- Responsive frontend UI
+- Modern, responsive SaaS-style UI (Tailwind CSS v4)
 - Deployment and environment management
 
 ---
