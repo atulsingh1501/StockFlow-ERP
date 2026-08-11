@@ -14,6 +14,7 @@ import { CustomersPage } from './pages/CustomersPage';
 import { ProductsPage } from './pages/ProductsPage';
 import { ChallansPage } from './pages/ChallansPage';
 import { StockPage } from './pages/StockPage';
+import { ReportsPage } from './pages/ReportsPage';
 
 const emptyCustomerForm: CustomerForm = {
   name: '', mobileNumber: '', email: '', businessName: '', gstNumber: '',
@@ -230,11 +231,13 @@ function App() {
 
   // ── Render: loading ───────────────────────────────────────────
   if (booting) return (
-    <div className="loading-screen">
-      <div style={{ textAlign: 'center' }}>
-        <div className="spinner" style={{ margin: '0 auto 16px' }}/>
-        <p style={{ color: '#6B7280', fontSize: 14 }}>Loading StockFlow…</p>
+    <div className="main-wrapper" style={{ padding: 24 }}>
+      <div style={{ height: 60, background: '#F3F4F6', borderRadius: 12, marginBottom: 24, animation: 'pulse 2s infinite' }} />
+      <div className="grid-two">
+        <div style={{ height: 200, background: '#F3F4F6', borderRadius: 12, animation: 'pulse 2s infinite' }} />
+        <div style={{ height: 200, background: '#F3F4F6', borderRadius: 12, animation: 'pulse 2s infinite' }} />
       </div>
+      <style>{`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }`}</style>
     </div>
   );
 
@@ -340,7 +343,7 @@ function App() {
 
           {activeTab === 'dashboard' && (
             <DashboardPage
-              user={user} products={products} challans={challans} movements={movements}
+              user={user} customers={customers} products={products} challans={challans} movements={movements}
               onTabChange={t => setActiveTab(t as Tab)}
             />
           )}
@@ -388,11 +391,7 @@ function App() {
           )}
 
           {activeTab === 'reports' && (
-            <div className="card card-pad" style={{ textAlign: 'center', padding: '60px 24px', color: '#9CA3AF' }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" strokeWidth="1.5" style={{ margin: '0 auto 12px', display: 'block' }}><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-              <p style={{ fontWeight: 600, fontSize: 15, color: '#374151', margin: 0 }}>Reports coming soon</p>
-              <p style={{ fontSize: 13, marginTop: 4 }}>Advanced analytics dashboard is under development.</p>
-            </div>
+            <ReportsPage customers={customers} products={products} challans={challans} />
           )}
 
           {activeTab === 'settings' && (

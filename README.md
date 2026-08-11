@@ -371,18 +371,101 @@ _Add screenshot_
 - [x] Live deployment
 - [x] Environment variables
 - [x] README documentation
+- [x] PDF export for challans
+- [x] GitHub Actions CI/CD
+- [x] Global search with live API recommendations
+- [x] Sequential challan numbering (CH-YYYY-NNNNN)
+- [x] Stock movement log with pagination
+- [x] Role-based access (Admin / Sales / Warehouse / Accounts)
+
+---
+
+## 🏗️ Architecture
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    Client (Browser)                       │
+│         React + TypeScript + Tailwind CSS v4              │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌───────────┐  │
+│  │Dashboard │ │Customers │ │Products  │ │ Challans  │  │
+│  └──────────┘ └──────────┘ └──────────┘ └───────────┘  │
+│  ┌──────────┐ ┌──────────┐                              │
+│  │  Stock   │ │ Reports  │                              │
+│  └──────────┘ └──────────┘                              │
+└────────────────────────┬─────────────────────────────────┘
+                         │ HTTPS / REST API (JWT Bearer)
+┌────────────────────────▼─────────────────────────────────┐
+│                 Backend (Node.js + Express)               │
+│  ┌────────┐ ┌──────────┐ ┌───────────┐ ┌─────────────┐ │
+│  │ /auth  │ │/customers│ │/products  │ │  /challans  │ │
+│  └────────┘ └──────────┘ └───────────┘ └─────────────┘ │
+│  ┌───────────────────────────────────────────────────┐   │
+│  │         Middleware: jwtAuth, requireRole, validate │   │
+│  └───────────────────────────────────────────────────┘   │
+└────────────────────────┬─────────────────────────────────┘
+                         │ SQL (pg)
+┌────────────────────────▼─────────────────────────────────┐
+│                    PostgreSQL Database                    │
+│   users │ customers │ products │ challans                 │
+│   challan_items │ stock_movements                        │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Deployment:**
+- Frontend → **Vercel** (https://stock-flow-erp-tau.vercel.app/)
+- Backend → **Render** (https://stockflow-erp-backend.onrender.com/)
+- CI/CD → **GitHub Actions** (`.github/workflows/ci.yml`)
+
+---
+
+## 📋 Business Rules
+
+| Rule | Implementation |
+|---|---|
+| Stock only deducted on **confirmed** challan | `challanRoutes.ts` — status guard |
+| **Negative stock** is prevented | Row-level lock `FOR UPDATE` + quantity check before deduct |
+| Product data **snapshotted** at time of sale | `product_snapshot JSONB` column in `challan_items` |
+| Challan numbers are **sequential per year** | `CH-YYYY-NNNNN` format, auto-incremented in DB |
+| Notes are **append-only** timestamps | `POST /customers/:id/notes` prepends timestamp |
+| Role-based **access control** | `requireRole()` middleware on every protected route |
+
+---
+
+## 📁 Repository Structure
+
+```
+StockFlow-ERP/
+├── .github/workflows/ci.yml     # GitHub Actions CI pipeline
+├── backend/
+│   ├── src/
+│   │   ├── index.ts             # Express app entry point
+│   │   ├── db.ts                # PostgreSQL pool
+│   │   ├── stockMovementLogic.ts# Shared stock deduction logic
+│   │   ├── middleware/          # jwtAuth, requireRole, validate
+│   │   └── routes/              # authRoutes, customerRoutes, etc.
+│   └── scripts/
+│       └── seed-demo-data.mjs   # Populates DB with demo data
+├── database/
+│   └── schema.sql               # Full PostgreSQL schema
+├── docs/
+│   ├── architecture.md          # Architecture deep-dive
+│   └── api-endpoints.md         # Full API reference
+└── frontend/
+    ├── src/
+    │   ├── App.tsx              # Root component & state
+    │   ├── api.ts               # All fetch helpers
+    │   ├── types.ts             # TypeScript interfaces
+    │   ├── components/          # Sidebar, Header, KpiCard
+    │   └── pages/               # One file per module
+    └── vite.config.ts
+```
 
 ---
 
 ## 👨‍💻 Author
 
 **Atul Singh**
-
-- Frontend: React + TypeScript
-- Backend: Node.js + Express + Prisma
-- Database: PostgreSQL
-
-GitHub: https://github.com/atulsingh1501
+- GitHub: https://github.com/atulsingh1501
 
 ---
 

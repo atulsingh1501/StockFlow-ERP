@@ -62,7 +62,15 @@ challanRoutes.post('/', validateBody(['customerId', 'items']), async (req: Authe
     }
 
     const status = payload.status === 'confirmed' ? 'confirmed' : 'draft';
-    const challanNumber = `CH-${Date.now()}`;
+    const year = new Date().getFullYear();
+    const prefix = `CH-${year}-`;
+    const lastChallanResult = await client.query(`SELECT challan_number FROM challans WHERE challan_number LIKE $1 ORDER BY id DESC LIMIT 1`, [`${prefix}%`]);
+    let nextNum = 1;
+    if (lastChallanResult.rows.length > 0) {
+      const lastNum = parseInt(lastChallanResult.rows[0].challan_number.replace(prefix, ''), 10);
+      if (!isNaN(lastNum)) nextNum = lastNum + 1;
+    }
+    const challanNumber = `${prefix}${String(nextNum).padStart(5, '0')}`;
 
     let totalQuantity = 0;
     const normalizedItems: Array<{ productId: string; quantity: number; snapshot: Record<string, unknown>; unitPrice: number }> = [];
