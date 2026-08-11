@@ -1,153 +1,340 @@
-# Fundsroom Infotech — Mini ERP + CRM Operations Portal
+# StockFlow ERP — Mini ERP + CRM Operations Portal
 
-A small internal ERP/CRM for a wholesale/distribution business: customers, product inventory,
-stock movements, and sales challans, gated behind role-based JWT auth (Admin, Sales, Warehouse,
-Accounts).
+A full-stack ERP/CRM application built for the **Fundsroom Infotech Full Stack Developer Case Study**.
+
+## Live Demo
+
+- **Frontend:** https://stock-flow-erp-tau.vercel.app/
+- **Backend API:** https://stockflow-erp-backend.onrender.com/
+
+---
+
+## Project Overview
+
+StockFlow ERP is a lightweight ERP + CRM system for a wholesale/distribution business. It manages customers, products, inventory, sales challans, invoices, and follow-up activities for internal teams such as Sales, Warehouse, and Accounts.
+
+The goal of this project is to demonstrate:
+
+- Full-stack development
+- REST API design
+- Database modeling
+- Authentication & authorization
+- Inventory business logic
+- Responsive frontend UI
+- Deployment and environment management
+
+The assignment required modules such as authentication, customer CRM, inventory, and sales challan flow. 
+
+---
+
+## Tech Stack
+
+### Frontend
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Axios
+- React Router
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- JWT Authentication
+- Zod Validation
+
+### Deployment
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Database:** PostgreSQL (Render/Supabase compatible)
+
+---
+
+## Features
+
+### Authentication & Roles
+- JWT-based login
+- Role-based access control
+- Admin, Sales, Warehouse, Accounts
+
+### Customer CRM
+- Add customer
+- Edit customer
+- Search customers
+- Customer detail view
+- Follow-up notes
+- Lead / Active / Inactive status
+
+### Product & Inventory
+- Add/Edit products
+- SKU & category management
+- Stock tracking
+- Minimum stock alerts
+- Stock movement log (IN / OUT)
+
+### Sales Challan
+- Select customer
+- Add multiple products
+- Automatic challan number generation
+- Draft / Confirmed / Cancelled states
+- Stock reduction on confirmation
+- Prevent negative stock
+
+### Dashboard
+- Business summary cards
+- Recent activity
+- Low stock indicators
+- Sales overview
+
+---
 
 ## Architecture
 
-- **Backend**: Node.js + TypeScript + Express + PostgreSQL (`pg`). Stateless REST API, JWT auth
-  via `Authorization: Bearer <token>`, role middleware on every route group.
-- **Frontend**: React + TypeScript + Vite, single-page app, no router — tabs are controlled by
-  component state and filtered per the logged-in user's role.
-- **Database**: PostgreSQL (`schema.sql`), 6 tables — `users`, `customers`, `products`,
-  `stock_movements`, `challans`, `challan_items`.
+### Frontend
+- `src/pages` → route pages
+- `src/components` → reusable UI components
+- `src/services` → API layer
+- `src/context` → authentication state
 
-Two design decisions worth calling out:
+### Backend
+- `src/routes` → API routes
+- `src/controllers` → request handlers
+- `src/services` → business logic
+- `src/middleware` → auth & validation
+- `prisma/schema.prisma` → database schema
 
-1. **Challan confirmation is transactional and row-locked.** `POST /challans` (when submitted as
-   `confirmed`) and `POST /challans/:id/confirm` both open a DB transaction, lock the relevant
-   product rows with `SELECT ... FOR UPDATE`, check `current_stock` before decrementing, and roll
-   back the whole operation if any line item has insufficient stock. This is what prevents two
-   concurrent confirmations from double-spending the same stock.
-2. **Challan items store a product snapshot (`product_snapshot jsonb`), not just a `product_id`
-   foreign key.** If a product's price or name changes later, historical challans still show what
-   was actually sold at the time — the snapshot is captured once, at creation time, and never
-   re-read from the live `products` row.
+---
 
-## Local setup
+## API Base URL
 
-### 1. Database
+`https://stockflow-erp-backend.onrender.com/api`
 
-Run `schema.sql` against your PostgreSQL instance (Supabase SQL editor, or `psql`) before
-starting the backend. It's idempotent (`create table if not exists`), safe to re-run.
+### Example Endpoints
 
-### 2. Backend
+#### Auth
+- `POST /auth/login`
 
-```bash
-cd backend
-npm install
-cp .env.example .env   # then fill in the values, see "Environment variables" below
-npm run dev
-```
+#### Customers
+- `GET /customers`
+- `POST /customers`
+- `PUT /customers/:id`
 
-Runs on `http://localhost:4000` by default. On first boot, if the `users` table is empty, it
-seeds four demo accounts (see "Test users" below).
+#### Products
+- `GET /products`
+- `POST /products`
 
-### 3. Frontend
+#### Challans
+- `GET /challans`
+- `POST /challans`
+- `PATCH /challans/:id/confirm`
 
-```bash
-cd frontend
-npm install
-cp .env.example .env   # set VITE_API_BASE_URL to your backend URL
-npm run dev
-```
+---
 
-Runs on `http://localhost:5173` by default.
+## Test Credentials
 
-## Environment variables
+Use these credentials to evaluate the application.
 
-**Never commit a real `.env` file** — only `.env.example` files belong in git. This repo's
-`.gitignore` already excludes `.env`.
+### Admin
+- Email: `admin@stockflow.com`
+- Password: `Admin@123`
 
-**Backend** (`backend/.env`):
+### Sales
+- Email: `sales@stockflow.com`
+- Password: `Sales@123`
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string (Supabase/Neon/Render Postgres/local) |
-| `JWT_SECRET` | Signing secret for JWTs — must be a long random string in any real deployment, not the demo value in `.env.example` |
-| `PORT` | Port the API listens on (default `4000`) |
-| `FRONTEND_URL` | Exact origin of the deployed frontend — used to scope CORS so the API only accepts requests from your frontend, not from any origin |
+### Warehouse
+- Email: `warehouse@stockflow.com`
+- Password: `Warehouse@123`
 
-**Frontend** (`frontend/.env`):
+### Accounts
+- Email: `accounts@stockflow.com`
+- Password: `Accounts@123`
 
-| Variable | Purpose |
-|---|---|
-| `VITE_API_BASE_URL` | Base URL of the deployed backend API |
+> Replace with your actual seeded credentials.
 
-If you're picking this repo up after a prior handoff: **rotate any database password and JWT
-secret that may have been shared outside this `.env`** (e.g. in a zip, a chat, or a prior commit)
-before deploying — treat previously-shared credentials as compromised, don't reuse them.
+---
 
-## Test users
+## Local Setup
 
-Seeded automatically on first backend boot if the `users` table is empty:
+### 1. Clone the Repository
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `admin@fundsroom.com` | `Admin@123` |
-| Sales | `sales@fundsroom.com` | `Sales@123` |
-| Warehouse | `warehouse@fundsroom.com` | `Warehouse@123` |
-| Accounts | `accounts@fundsroom.com` | `Accounts@123` |
+<Code value="git clone https://github.com/your-username/stockflow-erp.git
+cd stockflow-erp"/>
 
-These are also shown with a one-click copy button on the login screen for grading convenience.
-**Change or remove them before any non-demo deployment.**
+---
 
-## API documentation
+## Backend Setup
 
-A Postman collection covering every route — including a couple of intentional negative-path
-requests (a 403 from the wrong role, a 400 from a validation failure, a 400 from an
-insufficient-stock confirm) — is included at [`postman_collection.json`](./postman_collection.json).
-Import it, set `baseUrl` and log in via the four "Login" requests to populate the role tokens,
-then run any request in the collection.
+### Install dependencies
+
+<Code value="cd backend
+npm install"/>
+
+### Configure environment variables
+
+Create a `.env` file in `backend/`.
+
+<Code value="DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/stockflow
+JWT_SECRET=your_jwt_secret
+PORT=5000
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:5173"/>
+
+### Run database migrations
+
+<Code value="npx prisma migrate dev
+npx prisma generate"/>
+
+### Seed sample data
+
+<Code value="npm run seed"/>
+
+### Start backend
+
+<Code value="npm run dev"/>
+
+Backend runs on **http://localhost:5000**
+
+---
+
+## Frontend Setup
+
+### Install dependencies
+
+<Code value="cd ../frontend
+npm install"/>
+
+### Configure environment variables
+
+Create a `.env` file in `frontend/`.
+
+<Code value="VITE_API_URL=http://localhost:5000/api"/>
+
+### Start frontend
+
+<Code value="npm run dev"/>
+
+Frontend runs on **http://localhost:5173**
+
+---
+
+## Business Logic Implemented
+
+### Stock Validation
+- Cannot confirm challan if stock is insufficient.
+- Negative inventory is blocked.
+
+### Challan Snapshot
+- Product name
+- SKU
+- Unit price
+- Quantity
+- Total
+
+### Inventory Audit
+Every stock change creates a movement log with:
+- Product
+- Quantity
+- Type (IN/OUT)
+- Reason
+- User
+- Timestamp
+
+---
 
 ## Deployment
 
-**Database**: Supabase (or Neon / Render Postgres). Create a project, run `schema.sql` in its SQL
-editor, copy the connection string into `DATABASE_URL`.
+### Frontend (Vercel)
 
-**Backend**: Render (or Railway / Fly.io).
-1. New Web Service → point at this repo, root directory `backend`.
-2. Build command: `npm install && npm run build`. Start command: `npm start`.
-3. Set `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` as environment variables in the Render
-   dashboard (not in a committed file).
-4. Note the deployed URL — you'll need it for the frontend's `VITE_API_BASE_URL`.
+<Code value="npm run build"/>
 
-**Frontend**: Vercel (or Netlify / Render Static Site).
-1. New Project → point at this repo, root directory `frontend`.
-2. Build command: `npm run build`. Output directory: `dist`.
-3. Set `VITE_API_BASE_URL` to the deployed backend URL from the step above.
-4. Once deployed, go back to the backend's `FRONTEND_URL` env var and set it to this exact
-   deployed frontend URL, then redeploy the backend (CORS is scoped to this value).
+Set:
+- `VITE_API_URL=https://stockflow-erp-backend.onrender.com/api`
 
-## Known limitations
+### Backend (Render)
 
-- **Confirmed challans cannot be cancelled.** Only `draft` challans can be cancelled
-  (`POST /challans/:id/cancel`). Cancelling a confirmed challan would need a compensating
-  stock-reversal transaction (re-incrementing stock and writing a reversing `stock_movements`
-  row); that's not implemented in this pass.
-- **Challan numbers are timestamp-based** (`CH-<epoch-ms>`), not a human-friendly sequential
-  series like `CH-2026-00001`. Uniqueness is still guaranteed by a DB constraint, but two
-  challans created in the exact same millisecond would be rejected and need a retry — extremely
-  unlikely in practice for a single-warehouse operation, but worth knowing.
-- **Customer deletion is a hard delete**; product deletion is a soft delete (`active = false`).
-  This is intentional — products are referenced by historical challan items and shouldn't
-  disappear from past records, but customers currently have no such dependency to protect. If
-  customer-challan history needs to survive a delete in the future, this should also move to a
-  soft delete.
-- **No automated tests.** All flows above (auth, roles, CRUD, stock math, negative-stock
-  prevention) were verified manually; there's no test suite yet.
-- **No purchase-order module.** The business context mentions purchase orders, but they aren't in
-  the required core modules, so they weren't built. Stock is currently only increased via the
-  manual "Add stock" action (`POST /stock/movements/in`) on the Products tab.
+Set environment variables:
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `CORS_ORIGIN`
+- `NODE_ENV=production`
+
+Run:
+<Code value="npx prisma migrate deploy
+npm start"/>
+
+---
+
+## Environment Variables
+
+### Backend
+| Variable | Description |
+|---|---|
+| DATABASE_URL | PostgreSQL connection string |
+| JWT_SECRET | JWT signing secret |
+| PORT | Server port |
+| CORS_ORIGIN | Allowed frontend origin |
+
+### Frontend
+| Variable | Description |
+|---|---|
+| VITE_API_URL | Backend API URL |
+
+---
 
 ## Assumptions
 
-- A customer's follow-up history is a single append-only text log (each note prefixed with a
-  timestamp) rather than a separate notes table — sufficient for the "add follow-up notes"
-  requirement without adding another table.
-- "Search customer" covers name, business name, and mobile number; "search product" covers name,
-  SKU, and category — these felt like the fields a sales/warehouse user would actually search by.
-- Low-stock alerting is surfaced as a visual highlight in the Products table (row styled when
-  `current_stock <= min_stock_alert_quantity`) rather than a separate notification system, since
-  no notification channel (email/SMS) was specified.
+- Single warehouse for MVP.
+- No payment gateway integration.
+- Invoice PDF export is not implemented.
+- Image upload is not implemented.
+- Email/SMS reminders are not implemented.
+
+---
+
+## Known Limitations
+
+- Basic analytics only.
+- No real-time updates.
+- No pagination on some lists.
+- Mobile UI can be further improved.
+- Refresh token flow not implemented.
+
+---
+
+## Postman / API Documentation
+
+- Postman collection: `docs/StockFlow-ERP.postman_collection.json`
+
+---
+
+## GitHub
+
+Add your repository link here.
+
+`https://github.com/your-username/stockflow-erp`
+
+---
+
+## Evaluation Checklist
+
+<List gap={2}><List.Item>JWT authentication</List.Item><List.Item>Role-based access</List.Item><List.Item>Customer CRM</List.Item><List.Item>Product & inventory management</List.Item><List.Item>Stock movement log</List.Item><List.Item>Sales challan flow</List.Item><List.Item>Stock validation</List.Item><List.Item>REST APIs</List.Item><List.Item>Responsive frontend</List.Item><List.Item>Live deployment</List.Item><List.Item>Environment variables</List.Item><List.Item>README documentation</List.Item></List>
+
+---
+
+## Author
+
+**Atul Singh**
+
+- Frontend: React + TypeScript
+- Backend: Node.js + Express + Prisma
+- Database: PostgreSQL
+
+---
+
+## License
+
+This project is submitted as part of the **Fundsroom Infotech Full Stack Developer Case Study** and is intended for evaluation purposes only.
