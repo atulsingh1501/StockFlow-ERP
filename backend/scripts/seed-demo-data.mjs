@@ -12,7 +12,7 @@
 // call the same REST endpoints your frontend uses — nothing special, no
 // direct DB access needed.
 
-const BASE_URL = 'https://stockflow-erp-backend.onrender.com'; // <-- change if different
+const BASE_URL = process.env.BASE_URL || 'http://localhost:4000';
 
 const CREDENTIALS = {
   sales: { email: 'sales@fundsroom.com', password: 'Sales@123' },
