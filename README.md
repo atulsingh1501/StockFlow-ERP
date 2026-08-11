@@ -155,65 +155,83 @@ The goal of this project is to demonstrate:
 
 ---
 
-# 🚀 Local Setup
+## 🚀 Local Setup
 
-## 1. Clone the Repository
+### 1. Clone the Repository
 
-<Code value="git clone https://github.com/atulsingh1501/StockFlow-ERP.git
-cd StockFlow-ERP"/>
+```bash
+git clone https://github.com/atulsingh1501/StockFlow-ERP.git
+cd StockFlow-ERP
+```
 
 ---
 
-# ⚙️ Backend Setup
+## ⚙️ Backend Setup
 
-## Install dependencies
+### Install dependencies
 
-<Code value="cd backend
-npm install"/>
+```bash
+cd backend
+npm install
+```
 
-## Configure environment variables
+### Configure environment variables
 
 Create a `.env` file in `backend/`.
 
-<Code value="DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/stockflow
+```env
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/stockflow
 JWT_SECRET=your_jwt_secret
 PORT=5000
 NODE_ENV=development
-CORS_ORIGIN=http://localhost:5173"/>
+CORS_ORIGIN=http://localhost:5173
+```
 
-## Run database migrations
+### Run database migrations
 
-<Code value="npx prisma migrate dev
-npx prisma generate"/>
+```bash
+npx prisma migrate dev
+npx prisma generate
+```
 
-## Seed sample data
+### Seed sample data
 
-<Code value="npm run seed"/>
+```bash
+npm run seed
+```
 
-## Start backend
+### Start backend
 
-<Code value="npm run dev"/>
+```bash
+npm run dev
+```
 
 Backend runs on **http://localhost:5000**
 
 ---
 
-# 💻 Frontend Setup
+## 💻 Frontend Setup
 
-## Install dependencies
+### Install dependencies
 
-<Code value="cd ../frontend
-npm install"/>
+```bash
+cd ../frontend
+npm install
+```
 
-## Configure environment variables
+### Configure environment variables
 
 Create a `.env` file in `frontend/`.
 
-<Code value="VITE_API_URL=http://localhost:5000/api"/>
+```env
+VITE_API_URL=http://localhost:5000/api
+```
 
-## Start frontend
+### Start frontend
 
-<Code value="npm run dev"/>
+```bash
+npm run dev
+```
 
 Frontend runs on **http://localhost:5173**
 
@@ -247,11 +265,15 @@ Every stock change creates a movement log with:
 
 ## Frontend (Vercel)
 
-<Code value="npm run build"/>
+```bash
+npm run build
+```
 
 Set:
 
-<Code value="VITE_API_URL=https://stockflow-erp-backend.onrender.com/api"/>
+```env
+VITE_API_URL=https://stockflow-erp-backend.onrender.com/api
+```
 
 ## Backend (Render)
 
@@ -264,8 +286,10 @@ Set environment variables:
 
 Run:
 
-<Code value="npx prisma migrate deploy
-npm start"/>
+```bash
+npx prisma migrate deploy
+npm start
+```
 
 ---
 
