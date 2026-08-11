@@ -59,7 +59,7 @@ export function CustomersPage({
             <button className="btn btn-secondary" onClick={() => setSelectedCustomer(null)}>← Back</button>
             <button className="btn btn-primary" onClick={() => {
               setEditingCustomerId(selectedCustomer.id);
-              setCustomerForm({ name: selectedCustomer.name, mobileNumber: selectedCustomer.mobile_number, email: selectedCustomer.email || '', businessName: selectedCustomer.business_name, gstNumber: selectedCustomer.gst_number || '', customerType: selectedCustomer.customer_type, address: selectedCustomer.address, status: selectedCustomer.status, followUpDate: selectedCustomer.follow_up_date || '', notes: selectedCustomer.notes || '' });
+              setCustomerForm(() => ({ name: selectedCustomer.name, mobileNumber: selectedCustomer.mobile_number, email: selectedCustomer.email || '', businessName: selectedCustomer.business_name, gstNumber: selectedCustomer.gst_number || '', customerType: selectedCustomer.customer_type, address: selectedCustomer.address, status: selectedCustomer.status, followUpDate: selectedCustomer.follow_up_date || '', notes: selectedCustomer.notes || '' }));
               setSelectedCustomer(null);
             }}>Edit Customer</button>
           </div>
