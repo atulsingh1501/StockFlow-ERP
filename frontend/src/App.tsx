@@ -320,6 +320,15 @@ function App() {
           title={PAGE_TITLES[activeTab]}
           userName={user.name}
           userRole={user.role}
+          onNavigate={(tab, id) => {
+            setActiveTab(tab as Tab);
+            if (tab === 'customers') {
+              setSelectedCustomer(null);
+              void loadCustomerDetail(token, id);
+            } else if (tab === 'products') {
+              setProductSearch('');
+            }
+          }}
         />
         <main className="content-area">
           {notice && (

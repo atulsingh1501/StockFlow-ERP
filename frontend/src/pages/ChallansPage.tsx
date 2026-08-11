@@ -1,4 +1,6 @@
 import React from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import type { Challan, Customer, Product, ChallanItemForm } from '../types';
 
 type Props = {
@@ -30,6 +32,36 @@ export function ChallansPage({
     if (!draftItem.productId || Number(draftItem.quantity) <= 0) return;
     setChallanForm(f => ({ ...f, items: [...f.items, { ...draftItem, quantity: String(Math.trunc(Number(draftItem.quantity))) }] }));
     setDraftItem(() => ({ productId: '', quantity: '1' }));
+  };
+
+  const exportPDF = (c: Challan) => {
+    const doc = new jsPDF();
+    doc.setFontSize(22);
+    doc.setTextColor(37, 99, 235); // Blue primary color
+    doc.text('Sales Challan', 14, 22);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(55, 65, 81);
+    doc.text(`Challan No: ${c.challan_number}`, 14, 34);
+    doc.text(`Date: ${new Date(c.created_at).toLocaleDateString()}`, 14, 40);
+    doc.text(`Status: ${c.status.toUpperCase()}`, 14, 46);
+    
+    doc.text(`Billed To:`, 120, 34);
+    doc.setFontSize(12);
+    doc.setTextColor(17, 24, 39);
+    doc.text(c.customer_name, 120, 41);
+
+    autoTable(doc, {
+      startY: 55,
+      head: [['Item Description', 'Quantity']],
+      body: [
+        ['Total Products Dispatched', c.total_quantity]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [37, 99, 235] }
+    });
+    
+    doc.save(`Challan_${c.challan_number}.pdf`);
   };
 
   return (
@@ -120,6 +152,9 @@ export function ChallansPage({
                       ) : (
                         <span style={{ fontSize: 12, color: '#9CA3AF' }}>{c.status === 'cancelled' ? 'Cancelled' : 'Locked'}</span>
                       )}
+                      <button className="btn btn-secondary btn-sm" title="Download PDF" onClick={() => exportPDF(c)}>
+                        ↓ PDF
+                      </button>
                     </td>
                   </tr>
                 ))}
