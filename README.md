@@ -319,6 +319,25 @@ Add your repository link here.
 
 ---
 
+## Screenshots
+
+### Login
+_Add screenshot_
+
+### Dashboard
+_Add screenshot_
+
+### Customer CRM
+_Add screenshot_
+
+### Inventory
+_Add screenshot_
+
+### Sales Challan
+_Add screenshot_
+
+---
+
 ## Evaluation Checklist
 
 <List gap={2}><List.Item>JWT authentication</List.Item><List.Item>Role-based access</List.Item><List.Item>Customer CRM</List.Item><List.Item>Product & inventory management</List.Item><List.Item>Stock movement log</List.Item><List.Item>Sales challan flow</List.Item><List.Item>Stock validation</List.Item><List.Item>REST APIs</List.Item><List.Item>Responsive frontend</List.Item><List.Item>Live deployment</List.Item><List.Item>Environment variables</List.Item><List.Item>README documentation</List.Item></List>
