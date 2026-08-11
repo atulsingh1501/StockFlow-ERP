@@ -2,14 +2,16 @@
 
 A full-stack ERP/CRM application built for the **Fundsroom Infotech Full Stack Developer Case Study**.
 
-## Live Demo
+---
+
+## 🌐 Live Demo
 
 - **Frontend:** https://stock-flow-erp-tau.vercel.app/
 - **Backend API:** https://stockflow-erp-backend.onrender.com/
 
 ---
 
-## Project Overview
+## 📌 Project Overview
 
 StockFlow ERP is a lightweight ERP + CRM system for a wholesale/distribution business. It manages customers, products, inventory, sales challans, invoices, and follow-up activities for internal teams such as Sales, Warehouse, and Accounts.
 
@@ -23,11 +25,9 @@ The goal of this project is to demonstrate:
 - Responsive frontend UI
 - Deployment and environment management
 
-The assignment required modules such as authentication, customer CRM, inventory, and sales challan flow. 
-
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 - React
@@ -53,14 +53,14 @@ The assignment required modules such as authentication, customer CRM, inventory,
 
 ---
 
-## Features
+## ✨ Features
 
-### Authentication & Roles
+### 🔐 Authentication & Roles
 - JWT-based login
 - Role-based access control
 - Admin, Sales, Warehouse, Accounts
 
-### Customer CRM
+### 👥 Customer CRM
 - Add customer
 - Edit customer
 - Search customers
@@ -68,14 +68,14 @@ The assignment required modules such as authentication, customer CRM, inventory,
 - Follow-up notes
 - Lead / Active / Inactive status
 
-### Product & Inventory
+### 📦 Product & Inventory
 - Add/Edit products
 - SKU & category management
 - Stock tracking
 - Minimum stock alerts
 - Stock movement log (IN / OUT)
 
-### Sales Challan
+### 🧾 Sales Challan
 - Select customer
 - Add multiple products
 - Automatic challan number generation
@@ -83,7 +83,7 @@ The assignment required modules such as authentication, customer CRM, inventory,
 - Stock reduction on confirmation
 - Prevent negative stock
 
-### Dashboard
+### 📊 Dashboard
 - Business summary cards
 - Recent activity
 - Low stock indicators
@@ -91,7 +91,7 @@ The assignment required modules such as authentication, customer CRM, inventory,
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ### Frontend
 - `src/pages` → route pages
@@ -108,7 +108,7 @@ The assignment required modules such as authentication, customer CRM, inventory,
 
 ---
 
-## API Base URL
+## 🔗 API Base URL
 
 `https://stockflow-erp-backend.onrender.com/api`
 
@@ -133,47 +133,45 @@ The assignment required modules such as authentication, customer CRM, inventory,
 
 ---
 
-## Test Credentials
-
-Use these credentials to evaluate the application.
+## 🧪 Test Credentials
 
 ### Admin
-- Email: `admin@stockflow.com`
-- Password: `Admin@123`
+- **Email:** `admin@stockflow.com`
+- **Password:** `Admin@123`
 
 ### Sales
-- Email: `sales@stockflow.com`
-- Password: `Sales@123`
+- **Email:** `sales@stockflow.com`
+- **Password:** `Sales@123`
 
 ### Warehouse
-- Email: `warehouse@stockflow.com`
-- Password: `Warehouse@123`
+- **Email:** `warehouse@stockflow.com`
+- **Password:** `Warehouse@123`
 
 ### Accounts
-- Email: `accounts@stockflow.com`
-- Password: `Accounts@123`
+- **Email:** `accounts@stockflow.com`
+- **Password:** `Accounts@123`
 
-> Replace with your actual seeded credentials.
-
----
-
-## Local Setup
-
-### 1. Clone the Repository
-
-<Code value="git clone https://github.com/your-username/stockflow-erp.git
-cd stockflow-erp"/>
+> Replace these with your actual seeded credentials.
 
 ---
 
-## Backend Setup
+# 🚀 Local Setup
 
-### Install dependencies
+## 1. Clone the Repository
+
+<Code value="git clone https://github.com/atulsingh1501/StockFlow-ERP.git
+cd StockFlow-ERP"/>
+
+---
+
+# ⚙️ Backend Setup
+
+## Install dependencies
 
 <Code value="cd backend
 npm install"/>
 
-### Configure environment variables
+## Configure environment variables
 
 Create a `.env` file in `backend/`.
 
@@ -183,16 +181,16 @@ PORT=5000
 NODE_ENV=development
 CORS_ORIGIN=http://localhost:5173"/>
 
-### Run database migrations
+## Run database migrations
 
 <Code value="npx prisma migrate dev
 npx prisma generate"/>
 
-### Seed sample data
+## Seed sample data
 
 <Code value="npm run seed"/>
 
-### Start backend
+## Start backend
 
 <Code value="npm run dev"/>
 
@@ -200,20 +198,20 @@ Backend runs on **http://localhost:5000**
 
 ---
 
-## Frontend Setup
+# 💻 Frontend Setup
 
-### Install dependencies
+## Install dependencies
 
 <Code value="cd ../frontend
 npm install"/>
 
-### Configure environment variables
+## Configure environment variables
 
 Create a `.env` file in `frontend/`.
 
 <Code value="VITE_API_URL=http://localhost:5000/api"/>
 
-### Start frontend
+## Start frontend
 
 <Code value="npm run dev"/>
 
@@ -221,7 +219,7 @@ Frontend runs on **http://localhost:5173**
 
 ---
 
-## Business Logic Implemented
+## 🧠 Business Logic Implemented
 
 ### Stock Validation
 - Cannot confirm challan if stock is insufficient.
@@ -245,32 +243,36 @@ Every stock change creates a movement log with:
 
 ---
 
-## Deployment
+# ☁️ Deployment
 
-### Frontend (Vercel)
+## Frontend (Vercel)
 
 <Code value="npm run build"/>
 
 Set:
-- `VITE_API_URL=https://stockflow-erp-backend.onrender.com/api`
 
-### Backend (Render)
+<Code value="VITE_API_URL=https://stockflow-erp-backend.onrender.com/api"/>
+
+## Backend (Render)
 
 Set environment variables:
+
 - `DATABASE_URL`
 - `JWT_SECRET`
 - `CORS_ORIGIN`
 - `NODE_ENV=production`
 
 Run:
+
 <Code value="npx prisma migrate deploy
 npm start"/>
 
 ---
 
-## Environment Variables
+## 🔑 Environment Variables
 
 ### Backend
+
 | Variable | Description |
 |---|---|
 | DATABASE_URL | PostgreSQL connection string |
@@ -279,13 +281,14 @@ npm start"/>
 | CORS_ORIGIN | Allowed frontend origin |
 
 ### Frontend
+
 | Variable | Description |
 |---|---|
 | VITE_API_URL | Backend API URL |
 
 ---
 
-## Assumptions
+## 📝 Assumptions
 
 - Single warehouse for MVP.
 - No payment gateway integration.
@@ -295,7 +298,7 @@ npm start"/>
 
 ---
 
-## Known Limitations
+## ⚠️ Known Limitations
 
 - Basic analytics only.
 - No real-time updates.
@@ -305,21 +308,13 @@ npm start"/>
 
 ---
 
-## Postman / API Documentation
+## 📬 Postman / API Documentation
 
-- Postman collection: `docs/StockFlow-ERP.postman_collection.json`
-
----
-
-## GitHub
-
-Add your repository link here.
-
-`https://github.com/your-username/stockflow-erp`
+- `postman_collection.json`
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
 ### Login
 _Add screenshot_
@@ -338,13 +333,24 @@ _Add screenshot_
 
 ---
 
-## Evaluation Checklist
+## ✅ Evaluation Checklist
 
-<List gap={2}><List.Item>JWT authentication</List.Item><List.Item>Role-based access</List.Item><List.Item>Customer CRM</List.Item><List.Item>Product & inventory management</List.Item><List.Item>Stock movement log</List.Item><List.Item>Sales challan flow</List.Item><List.Item>Stock validation</List.Item><List.Item>REST APIs</List.Item><List.Item>Responsive frontend</List.Item><List.Item>Live deployment</List.Item><List.Item>Environment variables</List.Item><List.Item>README documentation</List.Item></List>
+- [x] JWT authentication
+- [x] Role-based access
+- [x] Customer CRM
+- [x] Product & inventory management
+- [x] Stock movement log
+- [x] Sales challan flow
+- [x] Stock validation
+- [x] REST APIs
+- [x] Responsive frontend
+- [x] Live deployment
+- [x] Environment variables
+- [x] README documentation
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 **Atul Singh**
 
@@ -352,8 +358,10 @@ _Add screenshot_
 - Backend: Node.js + Express + Prisma
 - Database: PostgreSQL
 
+GitHub: https://github.com/atulsingh1501
+
 ---
 
-## License
+## 📄 License
 
 This project is submitted as part of the **Fundsroom Infotech Full Stack Developer Case Study** and is intended for evaluation purposes only.
