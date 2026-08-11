@@ -1,0 +1,346 @@
+{
+  "info": {
+    "name": "StockFlow ERP API",
+    "description": "Mini ERP + CRM Operations Portal - covers auth, customers, products, challans, and stock. Set the collection variables baseUrl and tokens after logging in as each role.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "adminToken", "value": "" },
+    { "key": "salesToken", "value": "" },
+    { "key": "warehouseToken", "value": "" },
+    { "key": "accountsToken", "value": "" },
+    { "key": "customerId", "value": "" },
+    { "key": "productId", "value": "" },
+    { "key": "challanId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login - Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@fundsroom.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Sales",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sales@fundsroom.com\",\n  \"password\": \"Sales@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Warehouse",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"warehouse@fundsroom.com\",\n  \"password\": \"Warehouse@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Accounts",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"accounts@fundsroom.com\",\n  \"password\": \"Accounts@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get current user (me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers (sales/accounts)",
+      "item": [
+        {
+          "name": "List customers (paginated, search)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/customers?search=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"],
+              "query": [
+                { "key": "search", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{salesToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ravi Traders\",\n  \"mobileNumber\": \"9876543210\",\n  \"email\": \"ravi@traders.com\",\n  \"businessName\": \"Ravi Traders Pvt Ltd\",\n  \"gstNumber\": \"24AAAAA0000A1Z5\",\n  \"customerType\": \"Wholesale\",\n  \"address\": \"MG Road, Vadodara\",\n  \"status\": \"Lead\",\n  \"followUpDate\": \"2026-08-20\",\n  \"notes\": \"Interested in bulk order\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/customers", "host": ["{{baseUrl}}"], "path": ["customers"] }
+          }
+        },
+        {
+          "name": "Get customer detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": { "raw": "{{baseUrl}}/customers/{{customerId}}", "host": ["{{baseUrl}}"], "path": ["customers", "{{customerId}}"] }
+          }
+        },
+        {
+          "name": "Update customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{salesToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ravi Traders\",\n  \"mobileNumber\": \"9876543210\",\n  \"email\": \"ravi@traders.com\",\n  \"businessName\": \"Ravi Traders Pvt Ltd\",\n  \"gstNumber\": \"24AAAAA0000A1Z5\",\n  \"customerType\": \"Wholesale\",\n  \"address\": \"MG Road, Vadodara\",\n  \"status\": \"Active\",\n  \"followUpDate\": \"2026-09-01\",\n  \"notes\": \"Converted to active\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/customers/{{customerId}}", "host": ["{{baseUrl}}"], "path": ["customers", "{{customerId}}"] }
+          }
+        },
+        {
+          "name": "Add follow-up note",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{salesToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"note\": \"Called customer, follow up next week\"\n}" },
+            "url": { "raw": "{{baseUrl}}/customers/{{customerId}}/notes", "host": ["{{baseUrl}}"], "path": ["customers", "{{customerId}}", "notes"] }
+          }
+        },
+        {
+          "name": "Delete customer",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": { "raw": "{{baseUrl}}/customers/{{customerId}}", "host": ["{{baseUrl}}"], "path": ["customers", "{{customerId}}"] }
+          }
+        },
+        {
+          "name": "[Role check] Warehouse forbidden from customers -> expect 403",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{warehouseToken}}" }],
+            "url": { "raw": "{{baseUrl}}/customers", "host": ["{{baseUrl}}"], "path": ["customers"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products (warehouse/sales/accounts)",
+      "item": [
+        {
+          "name": "List products (paginated, search)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{warehouseToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/products?search=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "search", "value": "" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{warehouseToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Steel Pipe 2 inch\",\n  \"sku\": \"SP-2IN-001\",\n  \"category\": \"Pipes\",\n  \"unitPrice\": 450,\n  \"currentStock\": 100,\n  \"minStockAlertQuantity\": 20,\n  \"locationWarehouse\": \"Warehouse A\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] }
+          }
+        },
+        {
+          "name": "Update product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{warehouseToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Steel Pipe 2 inch\",\n  \"sku\": \"SP-2IN-001\",\n  \"category\": \"Pipes\",\n  \"unitPrice\": 475,\n  \"minStockAlertQuantity\": 25,\n  \"locationWarehouse\": \"Warehouse A\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["products", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "Restock product (stock IN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{warehouseToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 50,\n  \"reason\": \"New purchase order received\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/stock/movements/in", "host": ["{{baseUrl}}"], "path": ["stock", "movements", "in"] }
+          }
+        },
+        {
+          "name": "Delete (deactivate) product",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{warehouseToken}}" }],
+            "url": { "raw": "{{baseUrl}}/products/{{productId}}", "host": ["{{baseUrl}}"], "path": ["products", "{{productId}}"] }
+          }
+        },
+        {
+          "name": "[Validation check] Negative unit price -> expect 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{warehouseToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bad Product\",\n  \"sku\": \"BAD-001\",\n  \"category\": \"Test\",\n  \"unitPrice\": -10,\n  \"currentStock\": 5,\n  \"minStockAlertQuantity\": 1,\n  \"locationWarehouse\": \"Warehouse A\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Challans (sales)",
+      "item": [
+        {
+          "name": "List challans (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": { "raw": "{{baseUrl}}/challans?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["challans"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        },
+        {
+          "name": "Get challan detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": { "raw": "{{baseUrl}}/challans/{{challanId}}", "host": ["{{baseUrl}}"], "path": ["challans", "{{challanId}}"] }
+          }
+        },
+        {
+          "name": "Create challan (draft)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{salesToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"status\": \"draft\",\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"quantity\": 5 }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/challans", "host": ["{{baseUrl}}"], "path": ["challans"] }
+          }
+        },
+        {
+          "name": "Confirm challan (reduces stock)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": { "raw": "{{baseUrl}}/challans/{{challanId}}/confirm", "host": ["{{baseUrl}}"], "path": ["challans", "{{challanId}}", "confirm"] }
+          }
+        },
+        {
+          "name": "Cancel challan (draft only)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{salesToken}}" }],
+            "url": { "raw": "{{baseUrl}}/challans/{{challanId}}/cancel", "host": ["{{baseUrl}}"], "path": ["challans", "{{challanId}}", "cancel"] }
+          }
+        },
+        {
+          "name": "[Business rule check] Confirm with insufficient stock -> expect 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{salesToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"status\": \"confirmed\",\n  \"items\": [\n    { \"productId\": \"{{productId}}\", \"quantity\": 999999 }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/challans", "host": ["{{baseUrl}}"], "path": ["challans"] }
+          }
+        },
+        {
+          "name": "[Role check] Warehouse forbidden from challans -> expect 403",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{warehouseToken}}" }],
+            "url": { "raw": "{{baseUrl}}/challans", "host": ["{{baseUrl}}"], "path": ["challans"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stock (warehouse/accounts)",
+      "item": [
+        {
+          "name": "List stock movements (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{warehouseToken}}" }],
+            "url": { "raw": "{{baseUrl}}/stock/movements?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["stock", "movements"], "query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }] }
+          }
+        }
+      ]
+    }
+  ]
+}
