@@ -4,12 +4,13 @@ import { jwtAuth } from '../middleware/jwtAuth';
 import { requireRole } from '../middleware/roleMiddleware';
 import { validateBody } from '../middleware/validationMiddleware';
 import { isNonNegativeNumber } from '../middleware/validators';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 export const productRoutes = Router();
 
 productRoutes.use(jwtAuth, requireRole('warehouse', 'sales', 'accounts'));
 
-productRoutes.get('/', async (req, res) => {
+productRoutes.get('/', asyncHandler(async (req, res) => {
   const search = String(req.query.search || '').trim();
   const page = Math.max(Number(req.query.page || 1), 1);
   const limit = Math.max(Number(req.query.limit || 10), 1);
@@ -30,9 +31,9 @@ productRoutes.get('/', async (req, res) => {
   );
   const total = Number(countResult.rows[0]?.total || 0);
   res.json({ items: result.rows, page, limit, total, totalPages: Math.max(Math.ceil(total / limit), 1) });
-});
+}));
 
-productRoutes.post('/', requireRole('warehouse'), validateBody(['name', 'sku', 'category', 'unitPrice', 'currentStock', 'minStockAlertQuantity', 'locationWarehouse']), async (req, res) => {
+productRoutes.post('/', requireRole('warehouse'), validateBody(['name', 'sku', 'category', 'unitPrice', 'currentStock', 'minStockAlertQuantity', 'locationWarehouse']), asyncHandler(async (req, res) => {
   const body = req.body;
 
   if (!isNonNegativeNumber(body.unitPrice) || !isNonNegativeNumber(body.currentStock) || !isNonNegativeNumber(body.minStockAlertQuantity)) {
@@ -46,9 +47,9 @@ productRoutes.post('/', requireRole('warehouse'), validateBody(['name', 'sku', '
     [body.name, body.sku, body.category, Number(body.unitPrice), Number(body.currentStock), Number(body.minStockAlertQuantity), body.locationWarehouse]
   );
   res.status(201).json({ item: result.rows[0] });
-});
+}));
 
-productRoutes.put('/:id', requireRole('warehouse'), validateBody(['name', 'sku', 'category', 'unitPrice', 'minStockAlertQuantity', 'locationWarehouse']), async (req, res) => {
+productRoutes.put('/:id', requireRole('warehouse'), validateBody(['name', 'sku', 'category', 'unitPrice', 'minStockAlertQuantity', 'locationWarehouse']), asyncHandler(async (req, res) => {
   const body = req.body;
 
   if (!isNonNegativeNumber(body.unitPrice) || !isNonNegativeNumber(body.minStockAlertQuantity)) {
@@ -60,10 +61,15 @@ productRoutes.put('/:id', requireRole('warehouse'), validateBody(['name', 'sku',
      where id=$7 returning *`,
     [body.name, body.sku, body.category, Number(body.unitPrice), Number(body.minStockAlertQuantity), body.locationWarehouse, req.params.id]
   );
-  res.json({ item: result.rows[0] });
-});
 
-productRoutes.delete('/:id', requireRole('warehouse'), async (req, res) => {
+  if (!result.rows[0]) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+
+  res.json({ item: result.rows[0] });
+}));
+
+productRoutes.delete('/:id', requireRole('warehouse'), asyncHandler(async (req, res) => {
   await pool.query('update products set active = false where id = $1', [req.params.id]);
   res.json({ ok: true });
-});
+}));

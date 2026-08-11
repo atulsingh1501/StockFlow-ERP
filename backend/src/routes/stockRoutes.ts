@@ -5,13 +5,14 @@ import { requireRole } from '../middleware/roleMiddleware';
 import { validateBody } from '../middleware/validationMiddleware';
 import { isPositiveInteger } from '../middleware/validators';
 import { createRestockMovement } from '../stockMovementLogic';
+import { asyncHandler } from '../middleware/asyncHandler';
 import type { AuthedRequest } from '../types';
 
 export const stockRoutes = Router();
 
 stockRoutes.use(jwtAuth, requireRole('warehouse', 'accounts'));
 
-stockRoutes.get('/movements', async (req, res) => {
+stockRoutes.get('/movements', asyncHandler(async (req, res) => {
   const page = Math.max(Number(req.query.page || 1), 1);
   const limit = Math.max(Number(req.query.limit || 10), 1);
   const offset = (page - 1) * limit;
@@ -28,7 +29,7 @@ stockRoutes.get('/movements', async (req, res) => {
   );
   const total = Number(countResult.rows[0]?.total || 0);
   res.json({ items: result.rows, page, limit, total, totalPages: Math.max(Math.ceil(total / limit), 1) });
-});
+}));
 
 stockRoutes.post(
   '/movements/in',

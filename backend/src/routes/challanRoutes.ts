@@ -4,13 +4,14 @@ import { jwtAuth } from '../middleware/jwtAuth';
 import { requireRole } from '../middleware/roleMiddleware';
 import { validateBody } from '../middleware/validationMiddleware';
 import { createConfirmedMovement } from '../stockMovementLogic';
+import { asyncHandler } from '../middleware/asyncHandler';
 import type { AuthedRequest } from '../types';
 
 export const challanRoutes = Router();
 
 challanRoutes.use(jwtAuth, requireRole('sales'));
 
-challanRoutes.get('/', async (req, res) => {
+challanRoutes.get('/', asyncHandler(async (req, res) => {
   const page = Math.max(Number(req.query.page || 1), 1);
   const limit = Math.max(Number(req.query.limit || 10), 1);
   const offset = (page - 1) * limit;
@@ -27,9 +28,9 @@ challanRoutes.get('/', async (req, res) => {
   );
   const total = Number(countResult.rows[0]?.total || 0);
   res.json({ items: result.rows, page, limit, total, totalPages: Math.max(Math.ceil(total / limit), 1) });
-});
+}));
 
-challanRoutes.get('/:id', async (req, res) => {
+challanRoutes.get('/:id', asyncHandler(async (req, res) => {
   const challanResult = await pool.query(
     `select c.*, cu.name as customer_name, u.name as created_by_name
      from challans c
@@ -46,7 +47,7 @@ challanRoutes.get('/:id', async (req, res) => {
     [req.params.id]
   );
   res.json({ item: challanResult.rows[0], items: itemsResult.rows });
-});
+}));
 
 challanRoutes.post('/', validateBody(['customerId', 'items']), async (req: AuthedRequest, res) => {
   const client = await pool.connect();

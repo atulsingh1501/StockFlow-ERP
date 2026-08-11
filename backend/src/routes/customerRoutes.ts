@@ -4,12 +4,13 @@ import { jwtAuth } from '../middleware/jwtAuth';
 import { requireRole } from '../middleware/roleMiddleware';
 import { validateBody } from '../middleware/validationMiddleware';
 import { isValidEmail, isValidMobile } from '../middleware/validators';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 export const customerRoutes = Router();
 
 customerRoutes.use(jwtAuth, requireRole('sales', 'accounts'));
 
-customerRoutes.get('/', async (req, res) => {
+customerRoutes.get('/', asyncHandler(async (req, res) => {
   const search = String(req.query.search || '').trim();
   const page = Math.max(Number(req.query.page || 1), 1);
   const limit = Math.max(Number(req.query.limit || 10), 1);
@@ -30,9 +31,9 @@ customerRoutes.get('/', async (req, res) => {
   );
   const total = Number(countResult.rows[0]?.total || 0);
   res.json({ items: result.rows, page, limit, total, totalPages: Math.max(Math.ceil(total / limit), 1) });
-});
+}));
 
-customerRoutes.get('/:id', async (req, res) => {
+customerRoutes.get('/:id', asyncHandler(async (req, res) => {
   const customerResult = await pool.query('select * from customers where id = $1', [req.params.id]);
   const customer = customerResult.rows[0];
 
@@ -50,9 +51,9 @@ customerRoutes.get('/:id', async (req, res) => {
   );
 
   res.json({ item: customer, challans: challansResult.rows });
-});
+}));
 
-customerRoutes.post('/:id/notes', validateBody(['note']), async (req, res) => {
+customerRoutes.post('/:id/notes', validateBody(['note']), asyncHandler(async (req, res) => {
   const note = String(req.body.note || '').trim();
 
   if (!note) {
@@ -71,9 +72,9 @@ customerRoutes.post('/:id/notes', validateBody(['note']), async (req, res) => {
 
   const result = await pool.query('update customers set notes = $1, updated_at = now() where id = $2 returning *', [nextNotes, req.params.id]);
   res.status(201).json({ item: result.rows[0] });
-});
+}));
 
-customerRoutes.post('/', validateBody(['name', 'mobileNumber', 'businessName', 'customerType', 'address', 'status']), async (req, res) => {
+customerRoutes.post('/', validateBody(['name', 'mobileNumber', 'businessName', 'customerType', 'address', 'status']), asyncHandler(async (req, res) => {
   const body = req.body;
 
   if (!isValidMobile(body.mobileNumber)) {
@@ -90,9 +91,9 @@ customerRoutes.post('/', validateBody(['name', 'mobileNumber', 'businessName', '
     [body.name, body.mobileNumber, body.email || null, body.businessName, body.gstNumber || null, body.customerType, body.address, body.status, body.followUpDate || null, body.notes || null]
   );
   res.status(201).json({ item: result.rows[0] });
-});
+}));
 
-customerRoutes.put('/:id', validateBody(['name', 'mobileNumber', 'businessName', 'customerType', 'address', 'status']), async (req, res) => {
+customerRoutes.put('/:id', validateBody(['name', 'mobileNumber', 'businessName', 'customerType', 'address', 'status']), asyncHandler(async (req, res) => {
   const body = req.body;
 
   if (!isValidMobile(body.mobileNumber)) {
@@ -109,10 +110,15 @@ customerRoutes.put('/:id', validateBody(['name', 'mobileNumber', 'businessName',
      where id=$11 returning *`,
     [body.name, body.mobileNumber, body.email || null, body.businessName, body.gstNumber || null, body.customerType, body.address, body.status, body.followUpDate || null, body.notes || null, req.params.id]
   );
-  res.json({ item: result.rows[0] });
-});
 
-customerRoutes.delete('/:id', async (req, res) => {
+  if (!result.rows[0]) {
+    return res.status(404).json({ message: 'Customer not found' });
+  }
+
+  res.json({ item: result.rows[0] });
+}));
+
+customerRoutes.delete('/:id', asyncHandler(async (req, res) => {
   await pool.query('delete from customers where id = $1', [req.params.id]);
   res.json({ ok: true });
-});
+}));
