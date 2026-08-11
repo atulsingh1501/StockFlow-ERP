@@ -9,15 +9,15 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: 'frontend/package-lock.json'
+        node-version: '20'
 
     - name: Install Frontend Dependencies
       working-directory: ./frontend
@@ -34,7 +34,3 @@ jobs:
     - name: Generate Prisma Client
       working-directory: ./backend
       run: npx prisma generate
-
-    # Add any testing commands here if applicable
-    # - name: Run tests
-    #   run: npm test
