@@ -9,6 +9,9 @@ A full-stack ERP/CRM application built for the **Fundsroom Infotech Full Stack D
 - **Frontend:** https://stock-flow-erp-tau.vercel.app/
 - **Backend API:** https://stockflow-erp-backend.onrender.com/
 
+> ⚠️ **IMPORTANT NOTE FOR REVIEWERS:** 
+> The backend is hosted on Render's free tier, which goes to "sleep" after 15 minutes of inactivity. **When you click "Sign in" for the very first time, it may take 45–50 seconds for the backend to wake up.** Please click "Sign in" once and wait a moment. Once the server is awake, all subsequent clicks and API requests will be lightning fast!
+
 ---
 
 ## 📌 Project Overview
