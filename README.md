@@ -337,6 +337,7 @@ npm start
 
 ## 📬 Postman / API Documentation
 
+- [Full API Reference Documentation](./docs/api-endpoints.md)
 - `postman_collection.json`
 
 ---
