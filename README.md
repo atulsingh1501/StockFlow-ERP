@@ -345,19 +345,19 @@ npm start
 ## 📸 Screenshots
 
 ### Login
-_Add screenshot_
+![Login](./docs/assets/login.png)
 
 ### Dashboard
-_Add screenshot_
+![Dashboard](./docs/assets/dashboard.png)
 
 ### Customer CRM
-_Add screenshot_
+![Customer CRM](./docs/assets/customers.png)
 
 ### Inventory
-_Add screenshot_
+![Inventory](./docs/assets/inventory.png)
 
 ### Sales Challan
-_Add screenshot_
+![Sales Challan](./docs/assets/sales-challan.png)
 
 ---
 
